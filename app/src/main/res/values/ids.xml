@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="recyclerview" type="id"/>
+    <item name="button" type="id"/>
+    <item name="drawlayout" type="id"/>
+    <item name="navigation" type="id"/>
+    <item name="toobar" type="id"/>
+    <item name="appbar" type="id"/>
+    <item name="audio_item_icon" type="id"/>
+    <item name="audio_item_txt" type="id"/>
+    <item name="audio_playlist_expand" type="id"/>
+    <item name="audio_playlist_name" type="id"/>
+    <item name="audio_playlist_setting" type="id"/>
+    <item name="audio_list" type="id"/>
+    <item name="audio_navigation_bar" type="id"/>
+    <item name="audio_navigation_icon" type="id"/>
+    <item name="audio_navigation_title" type="id"/>
+    <item name="audio_navigation_subtitle" type="id"/>
+    <item name="audio_navigation_play" type="id"/>
+    <item name="audio_navigation_next" type="id"/>
+    <item name="audio_navigation_playlist" type="id"/>
+    <item name="audio_content" type="id"/>
+    <item name="local_music_bar" type="id"/>
+    <item name="local_music_tablayout" type="id"/>
+    <item name="local_music_viewpage" type="id"/>
+
+    <item name="song_head" type="id"/>
+    <item name="song_head_icon" type="id"/>
+    <item name="song_head_title" type="id"/>
+    <item name="song_head_subicon" type="id"/>
+    <item name="song_head_multiselect" type="id"/>
+
+    <item name="song_local_icon" type="id"/>
+    <item name="song_local_title" type="id"/>
+    <item name="song_local_subtitle" type="id"/>
+    <item name="song_local_size" type="id"/>
+    <item name="song_local_seting_icon" type="id"/>
+
+    <item name="rcyList" type="id"/>
+
+    <item name="local_item_icon" type="id"/>
+    <item name="local_item_title" type="id"/>
+    <item name="local_item_subtitle" type="id"/>
+    <item name="local_item_setting" type="id"/>
+
+    <item name="recently_play_bar" type="id"/>
+    <item name="recently_play_list" type="id"/>
+
+    <item name="recently_play_title" type="id"/>
+    <item name="recently_play_subtitle" type="id"/>
+    <item name="recently_play_setting" type="id"/>
+
+    <item name="image_id" type="id"/>
+
+    <item name="play_controll_view" type="id"/>
+    <item name="play_progress_view" type="id"/>
+
+    <item name="play_pause_btn" type="id"/>
+    <item name="play_next_btn" type="id"/>
+    <item name="play_previence_btn" type="id"/>
+
+    <item name="progress_timing" type="id"/>
+    <item name="progress_bar" type="id"/>
+    <item name="progress_end" type="id"/>
+
+    <item name="play_head" type="id"/>
+    <item name="play_info" type="id"/>
+    <item name="play_wish" type="id"/>
+    <item name="play_show" type="id"/>
+
+    <item name="play_show_bg" type="id"/>
+    <item name="play_show_needle" type="id"/>
+    <item name="play_show_page" type="id"/>
+</resources>

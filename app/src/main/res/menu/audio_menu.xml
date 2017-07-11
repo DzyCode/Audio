@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/top"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/test1"
+            android:title="test1"/>
+        <item
+            android:id="@+id/test2"
+            android:title="test2"/>
+        <item
+            android:id="@+id/test3"
+            android:title="test3"/>
+    </group>
+    <group
+        android:id="@+id/down"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/setting"
+            android:title="setting"/>
+    </group>
+</menu>
