@@ -7,7 +7,7 @@ import com.audio.model.loadSongHead
 
 class SongsNode : Node() {
     override fun load(context: Context, parentId: String, load: (MutableList<MediaBrowserCompat.MediaItem>) -> Unit) {
-        var result = mutableListOf<MediaBrowserCompat.MediaItem>()
+        val result = mutableListOf<MediaBrowserCompat.MediaItem>()
         result.addAll(context.loadSongHead(parentId))
         result.addAll(context.loadLocalSongs(parentId))
         load.invoke(result)

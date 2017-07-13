@@ -8,8 +8,8 @@ import android.support.v4.media.session.MediaSessionCompat
 import com.audio.model.Song
 import com.audio.model.db.RecentlyPlayManager
 import com.audio.present.base.PlayBackCallback
+import com.audio.util.agent.logd
 import com.audio.util.letNotNull
-import com.audio.util.log
 import com.audio.util.toRecentlyPlayList
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -40,13 +40,13 @@ class MusicPlaybackManager {
     fun play(song: Song?) {
         song?.let {
             RecentlyPlayManager.instance.insertOrUpdate(it.toRecentlyPlayList())
-            var audiomanager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            val audiomanager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             audiomanager.requestAudioFocus(
                     null,
                     AudioManager.STREAM_MUSIC,
                     AudioManager.AUDIOFOCUS_GAIN)
-            var factory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "audio"), null)
-            var mediasource = ExtractorMediaSource(Uri.parse(it.data.replace(" ", "%20")), factory,
+            val factory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "audio"), null)
+            val mediasource = ExtractorMediaSource(Uri.parse(it.data.replace(" ", "%20")), factory,
                     DefaultExtractorsFactory(), null, null)
             exoplayer()?.let {
                 it.prepare(mediasource)
@@ -77,7 +77,7 @@ class MusicPlaybackManager {
 
     inner class MediaSessionCallback : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            var song = SongQueueManager.instance.getSongWithId(mediaId ?: "")
+            val song = SongQueueManager.instance.getSongWithId(mediaId ?: "")
             song?.let {
                 play(it)
                 SongQueueManager.instance.setCurrentIndex(mediaId)
@@ -104,9 +104,7 @@ class MusicPlaybackManager {
         }
 
         override fun onSeekTo(pos: Long) {
-            exoplayer()?.let {
-                it.seekTo(pos)
-            }
+            exoplayer()?.seekTo(pos)
         }
 
         override fun onSkipToNext() {
@@ -122,6 +120,7 @@ class MusicPlaybackManager {
         override fun onSkipToQueueItem(id: Long) {
             super.onSkipToQueueItem(id)
         }
+
     }
 
     inner class ExoplayerListener : ExoPlayer.EventListener {
@@ -145,7 +144,7 @@ class MusicPlaybackManager {
 
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             exoplayer()?.letNotNull(playbackCallback, {
-                log("PlaybackManager","play state changed: " + it.state())
+                logd("PlaybackManager","play state changed: " + it.state())
                 this.onPlayStateChanged(it.state())
             })
         }

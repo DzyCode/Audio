@@ -16,6 +16,7 @@ import com.audio.play.SongQueueManager
 import com.audio.present.RecentlyPlayPresent
 import com.audio.present.base.ICallBack
 import com.audio.util.LifeOrder
+import com.audio.util.agent.setSongQueue
 import com.audio.util.filter
 import com.audio.util.to
 import com.audio.view.layout.*
@@ -113,8 +114,8 @@ class RecentlyPlayShow : AtyLife, ICallBack {
     }
 
     private fun addCurrentSongsToQueue(initialId: String = "") {
-        SongQueueManager.instance.setSongQueue(Node.RECENTPLAY,
-                adapt.filter { if (it is Song) it.to<Song>() else null }, initialId)
+        setSongQueue(Node.RECENTPLAY,
+                adapt.filter { it as? Song }, initialId)
     }
 
     private fun playCurrentSong() {

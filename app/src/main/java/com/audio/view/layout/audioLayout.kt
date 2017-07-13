@@ -1,18 +1,12 @@
 package com.audio.view.layout
 
 import android.app.Activity
-import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
 import android.view.View
-import android.view.ViewManager
-import android.widget.ImageView
 import audio.com.audio.R
-import com.audio.view.widget.RoundImageView
-import com.db.recycler.RcyItemDecoration
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
-import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.navigationView
 import org.jetbrains.anko.recyclerview.v7.recyclerView

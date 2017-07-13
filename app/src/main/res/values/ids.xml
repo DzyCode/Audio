@@ -20,9 +20,9 @@
     <item name="audio_navigation_next" type="id"/>
     <item name="audio_navigation_playlist" type="id"/>
     <item name="audio_content" type="id"/>
-    <item name="local_music_bar" type="id"/>
-    <item name="local_music_tablayout" type="id"/>
-    <item name="local_music_viewpage" type="id"/>
+    <item name="head_bar" type="id"/>
+    <item name="head_tablayout" type="id"/>
+    <item name="content_viewpage" type="id"/>
 
     <item name="song_head" type="id"/>
     <item name="song_head_icon" type="id"/>

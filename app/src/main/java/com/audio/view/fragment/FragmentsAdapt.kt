@@ -4,13 +4,16 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 
-class LocalFragmentAdapt : FragmentPagerAdapter {
-    var fragmentList : MutableList<Fragment>
-    val fragmentTableNames : MutableList<CharSequence>
-    constructor(fManager: FragmentManager) : super(fManager) {
-        fragmentList = createFragmentItems()
-        fragmentTableNames = createTableNames()
+class FragmentsAdapt : FragmentPagerAdapter {
+    var fragmentList: MutableList<Fragment>
+    val fragmentTableNames: MutableList<CharSequence>
+
+    constructor(fManager: FragmentManager, fragments: MutableList<Fragment>,
+                names: MutableList<CharSequence>) : super(fManager) {
+        fragmentList = fragments
+        fragmentTableNames = names
     }
+
     override fun getCount(): Int {
         return fragmentList.size
     }

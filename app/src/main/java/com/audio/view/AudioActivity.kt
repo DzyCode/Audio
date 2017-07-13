@@ -4,9 +4,8 @@ import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
-import com.audio.present.base.ICallBack
 import com.audio.util.LifeOrder
-import com.audio.util.emit
+import com.audio.util.agent.emit
 import com.audio.util.to
 import com.audio.view.life.Show
 import com.audio.view.life.createLife
@@ -17,7 +16,7 @@ class AudioActivity : AppCompatActivity() {
     lateinit var receive : (Activity, LifeOrder, Any?) -> Any
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var token = intent.getSerializableExtra(showToken()) ?: Show.AUDIOSHOW
+        val token = intent.getSerializableExtra(showToken()) ?: Show.AUDIOSHOW
         receive = createLife(token.to())
         emit(LifeOrder.ONCREATE, savedInstanceState, receive)
     }

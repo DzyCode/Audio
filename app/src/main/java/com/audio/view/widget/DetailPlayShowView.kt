@@ -10,6 +10,9 @@ import com.audio.model.picUri
 import com.audio.play.SongQueueManager
 import com.audio.present.base.IPlayControlCallback
 import com.audio.util.*
+import com.audio.util.agent.canPlayNext
+import com.audio.util.agent.canPlayPre
+import com.audio.util.agent.currentSong
 import com.audio.view.AudioActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.viewPager
@@ -93,7 +96,6 @@ class DetailPlayShowView : _RelativeLayout {
     fun playNext() {
         canPlayNext().yes {
             isFromOutside = true
-//            beginRotation(true)
             viewpage.setCurrentItem(viewpage.currentItem + 1, true)
         }
     }
@@ -101,7 +103,6 @@ class DetailPlayShowView : _RelativeLayout {
     fun playPre() {
         canPlayPre().yes {
             isFromOutside = true
-//            beginRotation(true)
             viewpage.setCurrentItem(viewpage.currentItem - 1, true)
         }
     }
@@ -142,10 +143,10 @@ class DetailPlayShowView : _RelativeLayout {
     private fun rotation(isPlay: Boolean, duration: Long) {
         (ROTATION_TIME - duration >= 0).execute({
             isPlay.execute({
-                var angle = NEEDLE_ANGLE * (1 - duration / ROTATION_TIME)
+                val angle = NEEDLE_ANGLE * (1 - duration / ROTATION_TIME)
                 needle.rotation = angle.toFloat()
             }, {
-                var angle = NEEDLE_ANGLE * duration / ROTATION_TIME
+                val angle = NEEDLE_ANGLE * duration / ROTATION_TIME
                 needle.rotation = angle.toFloat()
             })
         }, {
@@ -161,7 +162,7 @@ class DetailPlayShowView : _RelativeLayout {
     }
 
     private fun setCurrentDatas(): Int {
-        var datas = mutableListOf<Uri>()
+        val datas = mutableListOf<Uri>()
         var currentIndex = 0
         SongQueueManager.instance.getPreSong()?.let {
             datas.add(it.picUri())
@@ -224,11 +225,11 @@ class DetailPlayShowView : _RelativeLayout {
         }
 
         private fun playNext() {
-            playControlCallback?.let { it.playNext() }
+            playControlCallback?.playNext()
         }
 
         private fun playPre() {
-            playControlCallback?.let { it.playPre() }
+            playControlCallback?.playPre()
         }
 
         private fun isPlaying(): Boolean {

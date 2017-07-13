@@ -5,12 +5,7 @@ import android.net.Uri
 import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
-import com.audio.model.picUri
-import com.audio.play.SongQueueManager
 import com.audio.util.execute
-import com.audio.util.log
-import com.audio.util.no
-import com.audio.util.yes
 
 class DetailPlayShowAdapt : PagerAdapter() {
 
@@ -20,19 +15,15 @@ class DetailPlayShowAdapt : PagerAdapter() {
     fun setDatas(ctx: Context, mutableList: MutableList<Uri>) {
         isChanged = datas.size == mutableList.size
         datas.clear()
-        isChanged.execute({
-            for(i in 0 until views.size) {
-                views[i].load(mutableList[i])
-                views[i].rotation = 0F
-            }
-        },{
-            views.clear()
-            mutableList.forEach {
-                var albumcover = AlbumCover(ctx)
-                albumcover.load(it)
-                views.add(albumcover)
-            }
-        })
+        mutableList.forEachIndexed { index, uri ->
+            (index < views.size).execute({
+                views[index].load(uri)
+                views[index].rotation = 0F
+            },{
+                views.add(AlbumCover(ctx))
+                views[index].load(uri)
+            })
+        }
         datas.addAll(mutableList)
         notifyDataSetChanged()
     }
@@ -46,15 +37,11 @@ class DetailPlayShowAdapt : PagerAdapter() {
     }
 
     override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
-        container?.let {
-            it.removeView(views.get(position))
-        }
+        container?.removeView(views[position])
     }
 
     override fun instantiateItem(container: ViewGroup?, position: Int): Any{
-        container?.let {
-            it.addView(views[position])
-        }
+        container?.addView(views[position])
         return views[position]
     }
 

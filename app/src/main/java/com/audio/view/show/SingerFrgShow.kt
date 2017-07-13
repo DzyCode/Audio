@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import audio.com.audio.R
 import com.audio.model.Singer
 import com.audio.model.node.Node
-import com.audio.present.SingerPresent
+import com.audio.present.DefaultPresent
 import com.audio.util.LifeOrder
 import com.audio.util.to
 import com.audio.view.layout.SingerFrgLayout
@@ -18,13 +18,12 @@ import com.audio.view.life.FrgLife
 import com.db.recycler.RcyList
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
-import kotlin.properties.Delegates
 
 class SingerFrgShow : FrgLife() {
 
-    var present by Delegates.notNull<SingerPresent>()
-    var rcyList by Delegates.notNull<RecyclerView>()
-    var adapt by Delegates.notNull<RcyList>()
+    lateinit var present : DefaultPresent
+    lateinit var rcyList : RecyclerView
+    lateinit var adapt : RcyList
     var singerBind: (View?, Any) -> Unit = {
         view, any ->
         view?.let {
@@ -45,9 +44,7 @@ class SingerFrgShow : FrgLife() {
                 LifeOrder.ONCREATEVIEW -> {
                     initVariable(fragment, initView(fragment))
                 }
-                LifeOrder.ONSTART -> {
-                    onStart()
-                }
+                LifeOrder.ONSTART -> onStart()
                 LifeOrder.ONSTOP -> onStop()
                 else -> Any()
             }
@@ -60,7 +57,7 @@ class SingerFrgShow : FrgLife() {
 
     private fun initVariable(fragment: Fragment, view: View): View {
         rcyList = view.find<RecyclerView>(R.id.rcyList)
-        present = SingerPresent(fragment.activity)
+        present = DefaultPresent(fragment.activity)
         adapt = RcyList()
         adapt.registerType(Singer::class.java, singerBind, singerItemView)
         rcyList.adapter = adapt.adapt()

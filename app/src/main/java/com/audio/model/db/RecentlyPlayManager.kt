@@ -33,7 +33,7 @@ class RecentlyPlayManager {
     fun insertOrUpdate(playData: RecentlyPlayList) {
         doAsync {
             recentPlaylist?.let {
-                it.get(playData._id)?.let { dbHelper.update(playData) } ?: dbHelper.insert(playData)
+                it[playData._id]?.let { dbHelper.update(playData) } ?: dbHelper.insert(playData)
                 it.put(playData._id, playData)
             }
         }
@@ -48,17 +48,16 @@ class RecentlyPlayManager {
             val versionCode: Int = 1
             val ID = "_Id"
             val ADD_TIME = "add_time"
+            val dbName = "recentplaylist"
             val tableName = "recentplaylist"
         }
 
-        constructor() : super(version = versionCode)
+        constructor() : super(dbName, versionCode)
 
         override fun onCreate(p0: SQLiteDatabase?) {
-            p0?.let {
-                it.createTable(tableName, true,
+            p0?.createTable(tableName, true,
                         ID to INTEGER + PRIMARY_KEY,
                         ADD_TIME to INTEGER)
-            }
 
         }
 
@@ -102,12 +101,6 @@ class RecentlyPlayManager {
                         })
             }
             return result
-        }
-
-        inner class Parse : RowParser<RecentlyPlayList> {
-            override fun parseRow(columns: Array<Any?>): RecentlyPlayList {
-                return RecentlyPlayList(columns[0]!!.to<Int>(), columns[1]!!.to<Long>())
-            }
         }
     }
 }

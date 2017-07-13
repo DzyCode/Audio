@@ -80,11 +80,11 @@ class DetailPlayConrolView : _RelativeLayout {
     }
 
     private fun playNextClick() {
-        playControlCallback?.let { it.playNext() }
+        playControlCallback?.playNext()
     }
 
     private fun playPreClick() {
-        playControlCallback?.let { it.playPre() }
+        playControlCallback?.playPre()
     }
 
     private fun playListClick() {

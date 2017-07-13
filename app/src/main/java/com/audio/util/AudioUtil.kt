@@ -1,25 +1,12 @@
 package com.audio.util
 
-import android.content.Context
-import android.content.Intent
-import android.database.ContentObserver
 import android.net.Uri
-import android.os.Bundle
 import android.os.SystemClock
-import android.support.v4.app.Fragment
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import com.audio.AudioApp
 import com.audio.model.RecentlyPlayList
 import com.audio.model.Song
-import com.audio.play.SongQueueManager
-import com.audio.view.AudioActivity
-import com.audio.view.life.ILife
-import com.audio.view.life.Show
-import com.audio.view.life.dataToken
-import com.audio.view.life.showToken
 import com.bumptech.glide.Glide
 import com.db.recycler.RcyList
 import kotlin.properties.ReadOnlyProperty
@@ -28,30 +15,6 @@ import kotlin.reflect.KProperty
 
 fun <U> Any.to(): U {
     return this as U
-}
-
-fun <T : Any> T.log(tag: String, subtag: String) {
-    Log.d(tag, subtag)
-}
-
-fun <T : Any> T.canPlayNext(): Boolean {
-    return SongQueueManager.instance.canPlayNext()
-}
-
-fun <T : Any> T.canPlayPre(): Boolean {
-    return SongQueueManager.instance.canPlayPre()
-}
-
-fun <T : Any> T.currentSong() : Song? {
-    return SongQueueManager.instance.getCurrentSong()
-}
-
-fun <T : Context> T.emit(order: LifeOrder, data: Any?, receive: (T, LifeOrder, Any?) -> Any): Any {
-    return receive.invoke(this, order, data)
-}
-
-fun <T : Fragment> T.emit(order: LifeOrder, data: Any?, receive: (T, LifeOrder, Any?) -> Any): Any {
-    return receive.invoke(this, order, data)
 }
 
 fun <T : Number> T.toMb(): String {
@@ -98,7 +61,7 @@ fun <T, E> T.letNotNull(e: E?, block: E.(T) -> Unit) {
 }
 
 fun <T> RcyList.filter(block: (Any) -> T?): MutableList<T> {
-    var result = mutableListOf<T>()
+    val result = mutableListOf<T>()
     forEach {
         block.invoke(it)?.let {
             result.add(it)
@@ -107,6 +70,11 @@ fun <T> RcyList.filter(block: (Any) -> T?): MutableList<T> {
     return result
 }
 
+fun <T, R, E : List<R>> E.filter(block : (R) -> T?) : MutableList<T> {
+    val result = mutableListOf<T>()
+    forEach { block.invoke(it)?.let { result.add(it) } }
+    return result
+}
 fun <T : Any, E> T.equals(isEuqal: Boolean, e: E, block: (T, E) -> Unit) {
     if (this.equals(e) == isEuqal) {
         block.invoke(this, e)
@@ -115,14 +83,6 @@ fun <T : Any, E> T.equals(isEuqal: Boolean, e: E, block: (T, E) -> Unit) {
 
 fun Song.toRecentlyPlayList(time: Long? = null): RecentlyPlayList {
     return RecentlyPlayList(_id, time ?: System.currentTimeMillis())
-}
-
-fun <T : Context> T.startActivity(show: Show, bundle: Bundle? = null) {
-    var intent = Intent()
-    intent.setClass(this, AudioActivity::class.java)
-    intent.putExtra(showToken(), show)
-    bundle?.let { intent.putExtra(dataToken(), it) }
-    startActivity(intent)
 }
 
 fun <T : ImageView> T.load(uri: String) {
@@ -150,12 +110,12 @@ fun PlaybackStateCompat.paused(block: () -> Unit) {
 }
 
 fun PlaybackStateCompat.currentPlayProgress(): Long {
-    var delt = SystemClock.elapsedRealtime() - this.lastPositionUpdateTime
+    val delt = SystemClock.elapsedRealtime() - this.lastPositionUpdateTime
     return (delt * this.playbackSpeed + this.position).toLong()
 }
 
 fun <T : Number> T.MMSS(): String {
-    var value = this.toLong() / 1000  //ms -> s
+    val value = this.toLong() / 1000  //ms -> s
     if (value >= 3660) {
         return "59:59"
     } else {
@@ -202,3 +162,4 @@ fun Boolean.no(block: () -> Unit) {
         block.invoke()
     }
 }
+

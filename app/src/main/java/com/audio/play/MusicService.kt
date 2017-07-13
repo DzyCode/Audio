@@ -9,14 +9,13 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.audio.model.MusicProvider
 import com.audio.present.base.PlayBackCallback
-import com.audio.util.log
+import com.audio.util.agent.logd
 
 class MusicService : MediaBrowserServiceCompat() {
 
     lateinit var session: MediaSessionCompat
     lateinit var playManager: MusicPlaybackManager
     lateinit var musicProvider: MusicProvider
-    lateinit var songQueueManager: SongQueueManager
     override fun onCreate() {
         super.onCreate()
         playManager = MusicPlaybackManager(this)
@@ -58,7 +57,7 @@ class MusicService : MediaBrowserServiceCompat() {
     inner class PlayCallback : PlayBackCallback {
         override fun onPlayStateChanged(state: PlaybackStateCompat) {
             session.setPlaybackState(state)
-            log("musicservice", "play state changed: " + state.state)
+            logd("musicservice", "play state changed: " + state.state)
             when (state.state) {
                 PlaybackStateCompat.STATE_SKIPPING_TO_NEXT -> {
                     SongQueueManager.instance.skipQueuePosition(1)

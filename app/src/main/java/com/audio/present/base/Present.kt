@@ -2,7 +2,6 @@ package com.audio.present.base
 
 import android.app.Activity
 import android.content.Context
-import android.media.session.PlaybackState
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -13,13 +12,14 @@ import com.audio.play.MusicBrowserManager
 import com.audio.play.MusicPlayControl
 import com.audio.play.SongQueueManager
 
-abstract class Present : IPlayControlCallback{
-    val musicBrowserManager: MusicBrowserManager
-    val playControl : MusicPlayControl
-    var callBack : ICallBack? = null
-    val context : Context
-    constructor(context: Activity) {
-        musicBrowserManager = MusicBrowserManager(context)
+abstract class Present : IPlayControlCallback {
+    protected val musicBrowserManager: MusicBrowserManager
+    protected val playControl: MusicPlayControl
+    private var callBack: ICallBack? = null
+    protected val context: Context
+
+    constructor(context: Activity, connected : () -> Unit = {}) {
+        musicBrowserManager = MusicBrowserManager(context, connected)
         playControl = MusicPlayControl(context)
         this.context = context
     }
@@ -27,6 +27,7 @@ abstract class Present : IPlayControlCallback{
     fun registerCallback(callback: ICallBack) {
         this.callBack = callback
     }
+
     fun connect() {
         musicBrowserManager.connect(Callback())
     }
@@ -38,11 +39,9 @@ abstract class Present : IPlayControlCallback{
     fun <T> loadDataWithId(id: String, load: (String, List<T>) -> Unit) {
         musicBrowserManager.load(id, {
             s, list ->
-            var result = mutableListOf<T>()
-            for (item in list) {
-                var extra = item.description.extras
-                result.add(extra?.getSerializable(id) as T)
-            }
+            val result = mutableListOf<T>()
+            list.map { it.description.extras }
+                    .mapTo(result){it?.getSerializable(id) as T}
             load.invoke(id, result)
         }, {
             s ->
@@ -56,6 +55,7 @@ abstract class Present : IPlayControlCallback{
     override fun play(mediaId: String, extra: Bundle) {
         playControl.playForMediaId(mediaId, extra)
     }
+
     override fun pause() {
         playControl.pause()
     }
@@ -68,12 +68,18 @@ abstract class Present : IPlayControlCallback{
         playControl.playPrevience()
     }
 
-    fun currentSong() : Song? {
+    fun currentSong(): Song? {
         return SongQueueManager.instance.getCurrentSong()
     }
-    override fun getPlaybackState() : PlaybackStateCompat? {
+
+    fun queueTitle(): String? {
+        return playControl.queueTitle()
+    }
+
+    override fun getPlaybackState(): PlaybackStateCompat? {
         return playControl.getPlaybackState()
     }
+
     inner class Callback : MediaControllerCompat.Callback() {
         override fun onAudioInfoChanged(info: MediaControllerCompat.PlaybackInfo?) {
             super.onAudioInfoChanged(info)
@@ -104,11 +110,11 @@ abstract class Present : IPlayControlCallback{
         }
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            callBack?.let { it.onPlaybackStateChanged(state) }
+            callBack?.onPlaybackStateChanged(state)
         }
 
         override fun onQueueChanged(queue: MutableList<MediaSessionCompat.QueueItem>?) {
-            super.onQueueChanged(queue)
+            callBack?.onQueueChanged(queue)
         }
 
         override fun onQueueTitleChanged(title: CharSequence?) {

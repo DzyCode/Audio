@@ -2,7 +2,6 @@ package com.audio.present.base
 
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
-import com.audio.model.Song
 
 interface IPlayControlCallback{
     fun play() {}

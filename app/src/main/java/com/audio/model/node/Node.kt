@@ -11,6 +11,7 @@ abstract class Node {
         val ALBUMS = "albums"
         val FOLDER = "folder"
         val RECENTPLAY = "recentplay"
+        val SONGCOLLECTION = "songcollection"
         fun node(nodeId: String) : Node{
             when(nodeId) {
                 NAVIGATION -> return NavigationNode()
@@ -18,6 +19,7 @@ abstract class Node {
                 SINGER -> return SingerNode()
                 ALBUMS -> return AlbumNode()
                 RECENTPLAY -> return RecentlyPlayNode()
+                SONGCOLLECTION -> return SongCollectionNode()
                 else -> return EMPTY()
             }
         }

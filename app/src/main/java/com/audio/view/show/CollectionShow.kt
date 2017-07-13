@@ -1,16 +1,13 @@
 package com.audio.view.show
 
 import android.app.Activity
+import android.support.design.widget.TabLayout
+import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import audio.com.audio.R
-import com.audio.view.layout.LocalMusicLayout
-import com.audio.view.life.AtyLife
-import android.support.design.widget.TabLayout
-import android.support.v4.media.session.PlaybackStateCompat
-import com.audio.view.widget.PlayBar
 import com.audio.play.SongQueueManager
 import com.audio.present.DefaultPresent
 import com.audio.present.base.ICallBack
@@ -19,12 +16,14 @@ import com.audio.util.agent.currentSong
 import com.audio.view.fragment.FragmentsAdapt
 import com.audio.view.fragment.createFragmentItems
 import com.audio.view.fragment.createTableNames
+import com.audio.view.layout.CollectionLayout
+import com.audio.view.life.AtyLife
+import com.audio.view.widget.PlayBar
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
 import kotlin.properties.Delegates
 
-class LocalMusicShow : AtyLife, ICallBack {
-
+class CollectionShow : AtyLife, ICallBack {
     var parentView by Delegates.notNull<View>()
     var context by Delegates.notNull<Activity>()
     val tableLayout: TabLayout by lazy { parentView.find<TabLayout>(R.id.head_tablayout) }
@@ -32,54 +31,36 @@ class LocalMusicShow : AtyLife, ICallBack {
     val toolBar: Toolbar by lazy { parentView.find<Toolbar>(R.id.head_bar) }
     val playBar: PlayBar by lazy { PlayBar(parentView, context) }
     lateinit var present: DefaultPresent
-    var receive: (Activity, LifeOrder, Any?) -> Any = {
-        activity, lifeOrder, any ->
-        when (lifeOrder) {
-            LifeOrder.ONCREATE -> onCreate(activity)
-            LifeOrder.ONSTART -> onStart()
-            LifeOrder.ONRESUME -> onResume()
-            LifeOrder.ONSTOP -> onStop()
-            LifeOrder.ONDESTROY -> onDestroy()
-        }
-    }
 
     override fun receive(): (Activity, LifeOrder, Any?) -> Any {
-        return receive
+        return {
+            activity, lifeOrder, any ->
+            when (lifeOrder) {
+                LifeOrder.ONCREATE -> onCreate(activity)
+                LifeOrder.ONDESTROY -> onDestroy()
+            }
+        }
     }
 
     private fun onCreate(activity: Activity) {
-        initView(activity)
+        context = activity
+        initView(activity.to<AppCompatActivity>())
         initVariable(activity)
     }
 
-    private fun initView(activity: Activity) {
-        parentView = LocalMusicLayout().setContentView(activity)
-        activity.to<AppCompatActivity>().setSupportActionBar(toolBar)
-        activity.to<AppCompatActivity>().supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        viewPage.adapter = FragmentsAdapt(activity.to<AppCompatActivity>().supportFragmentManager,
-                createFragmentItems(), createTableNames())
+    private fun initView(activity: AppCompatActivity) {
+        parentView = CollectionLayout().setContentView(activity)
+        activity.setSupportActionBar(toolBar)
+        activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        viewPage.adapter = FragmentsAdapt(activity.supportFragmentManager, createFragmentItems(), createTableNames())
         tableLayout.setupWithViewPager(viewPage)
-    }
-
-    private fun initVariable(activity: Activity) {
-        context = activity
-        present = DefaultPresent(activity)
-        present.registerCallback(this)
-        present.connect()
-        toolBar.setNavigationOnClickListener {
-            context.onBackPressed()
-        }
-    }
-
-    private fun onStart() {
         playBar.play(currentSong())
     }
 
-    private fun onResume() {
-
-    }
-
-    private fun onStop() {
+    private fun initVariable(activity: Activity) {
+        present = DefaultPresent(activity)
+        present.registerCallback(this)
+        present.connect()
     }
 
     private fun onDestroy() {
@@ -93,4 +74,3 @@ class LocalMusicShow : AtyLife, ICallBack {
         }
     }
 }
-

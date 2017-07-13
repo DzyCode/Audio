@@ -6,7 +6,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 
-interface ICallBack{
+interface ICallBack {
     fun onAudioInfoChanged(info: MediaControllerCompat.PlaybackInfo?) {
     }
 
@@ -14,7 +14,12 @@ interface ICallBack{
     }
 
     fun onQueueChanged(queue: MutableList<MediaSessionCompat.QueueItem>?) {
+//        onSongQueueChanged(queue?.filter { it.convertSelfToSong() })
     }
+
+//    fun onSongQueueChanged(songs: MutableList<Song>?) {
+//
+//    }
 
     fun onQueueTitleChanged(title: CharSequence?) {
     }

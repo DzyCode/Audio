@@ -8,7 +8,7 @@ import com.audio.model.loadAudioNavigationSettingItems
 class NavigationNode : Node() {
     override fun load(context: Context, parentId: String,
                       load: (MutableList<MediaBrowserCompat.MediaItem>) -> Unit) {
-        var list = mutableListOf<MediaBrowserCompat.MediaItem>()
+        val list = mutableListOf<MediaBrowserCompat.MediaItem>()
         list.addAll(context.loadAudioNavigationHeadItems(parentId))
         list.addAll(context.loadAudioNavigationSettingItems(parentId))
         load.invoke(list)

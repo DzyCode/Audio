@@ -10,12 +10,15 @@ import com.audio.present.DetailPlayPresent
 import com.audio.present.base.ICallBack
 import com.audio.present.base.IPlayControlCallback
 import com.audio.util.*
+import com.audio.util.agent.nextSong
+import com.audio.util.agent.preSong
 import com.audio.view.AudioActivity
 import com.audio.view.layout.DetailAtyLayout
 import com.audio.view.life.AtyLife
 import com.audio.view.life.dataToken
 import com.audio.view.life.playStateToken
 import com.audio.view.widget.DetailPlayConrolView
+import com.audio.view.widget.DetailPlayInfoView
 import com.audio.view.widget.DetailPlayProgressView
 import com.audio.view.widget.DetailPlayShowView
 import org.jetbrains.anko.find
@@ -28,6 +31,7 @@ class DetailsPlayShow : AtyLife, ICallBack, IPlayControlCallback {
     private val playControlView by lazy { parentView.find<DetailPlayConrolView>(R.id.play_controll_view) }
     private val playProgressView by lazy { parentView.find<DetailPlayProgressView>(R.id.play_progress_view) }
     private val playShowView by lazy { parentView.find<DetailPlayShowView>(R.id.play_show) }
+    private val playInfoView by lazy { parentView.find<DetailPlayInfoView>(R.id.play_info) }
 
     private lateinit var present: DetailPlayPresent
     private val progressCallback: (Long) -> Unit = {
@@ -36,7 +40,6 @@ class DetailsPlayShow : AtyLife, ICallBack, IPlayControlCallback {
                 playProgressView.updateProgress(it)
                 playShowView.updateAlbumAngle(it)
             }
-
         }
     }
 
@@ -65,7 +68,7 @@ class DetailsPlayShow : AtyLife, ICallBack, IPlayControlCallback {
             it.setSupportActionBar(toolBar)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
-        var state = activity.intent
+        val state = activity.intent
                 .getBundleExtra(activity.dataToken())
                 .getParcelable<PlaybackStateCompat>(activity.playStateToken())
         present.currentSong()?.let {
@@ -78,7 +81,9 @@ class DetailsPlayShow : AtyLife, ICallBack, IPlayControlCallback {
     }
 
     private fun initVariable(activity: Activity) {
-        present = DetailPlayPresent(activity)
+        present = DetailPlayPresent(activity, {
+            playInfoView.setQueueTitle(present.queueTitle())
+        })
         present.registerCallback(this)
         present.connect()
     }
@@ -89,6 +94,7 @@ class DetailsPlayShow : AtyLife, ICallBack, IPlayControlCallback {
     }
 
     private fun start() {
+        playInfoView.setQueueTitle(present.queueTitle())
     }
 
     private fun onResume() {
@@ -125,19 +131,21 @@ class DetailsPlayShow : AtyLife, ICallBack, IPlayControlCallback {
 
     fun Toolbar.bind(song: Song?) {
         song?.let {
-            this.setTitle(it.title)
-            this.setSubtitle(it.artist)
+            this.title = it.title
+            this.subtitle = it.artist
         }
     }
 
     override fun playNext() {
-        present.playNext()
         playShowView.playNext()
+        playInfoView.updatePlayState(nextSong())
+        present.playNext()
     }
 
     override fun playPre() {
-        present.playPre()
         playShowView.playPre()
+        playInfoView.updatePlayState(preSong())
+        present.playPre()
     }
 
     override fun play() {

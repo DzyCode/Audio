@@ -5,7 +5,6 @@ import android.widget.SeekBar
 import android.widget.TextView
 import audio.com.audio.R
 import com.audio.util.MMSS
-import com.audio.util.log
 import org.jetbrains.anko.*
 import kotlin.properties.Delegates
 

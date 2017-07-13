@@ -10,8 +10,9 @@ import com.audio.model.Song
 import com.audio.model.SongHead
 import com.audio.model.node.Node
 import com.audio.play.SongQueueManager
-import com.audio.present.SongPresent
+import com.audio.present.DefaultPresent
 import com.audio.util.*
+import com.audio.util.agent.setSongQueue
 import com.audio.view.layout.*
 import com.audio.view.life.FrgLife
 import com.db.recycler.RcyList
@@ -20,7 +21,7 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk15.coroutines.onClick
 
 class SongFrgShow : FrgLife() {
-    lateinit var songPresent: SongPresent
+    lateinit var songPresent: DefaultPresent
     lateinit var songList: RecyclerView
     lateinit var songAdapt: RcyList
     var songHeadBind: (View?, Any) -> Unit = {
@@ -64,7 +65,7 @@ class SongFrgShow : FrgLife() {
             fragment, lifeOrder, any ->
             when (lifeOrder) {
                 LifeOrder.ONCREATEVIEW -> {
-                    var view = initView(fragment)
+                    val view = initView(fragment)
                     initVariable(fragment)
                     view
                 }
@@ -76,13 +77,13 @@ class SongFrgShow : FrgLife() {
     }
 
     private fun initView(fragment: Fragment): View {
-        var parent = SongFrgLayout().createView(AnkoContext.create(fragment.context, fragment))
+        val parent = SongFrgLayout().createView(AnkoContext.create(fragment.context, fragment))
         songList = parent.find<RecyclerView>(R.id.rcyList)
         return parent
     }
 
     private fun initVariable(fragment: Fragment) {
-        songPresent = SongPresent(fragment.activity!!)
+        songPresent = DefaultPresent(fragment.activity!!)
         songAdapt = RcyList()
         songAdapt.registerType(SongHead::class.java, songHeadBind, songHeadView)
         songAdapt.registerType(Song::class.java, songItemBind, songItemView)
@@ -97,7 +98,7 @@ class SongFrgShow : FrgLife() {
             songAdapt.clear()
             songAdapt.addAll(list)
             songAdapt.notifyDataSetChanged()
-            var songs = mutableListOf<Song>()
+            val songs = mutableListOf<Song>()
             list.forEach {
                 if(it is Song) {
                     songs.add(it)
@@ -111,8 +112,8 @@ class SongFrgShow : FrgLife() {
     }
 
     private fun addCurrentSongsToQueue(initialId : String) {
-        SongQueueManager.instance.setSongQueue(Node.SONGS,
-                songAdapt.filter { if(it is Song) it.to<Song>() else null }, initialId)
+        setSongQueue(Node.SONGS,
+                songAdapt.filter { it as? Song }, initialId)
     }
 
     private fun playCurrentSong() {

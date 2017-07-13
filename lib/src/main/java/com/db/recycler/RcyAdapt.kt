@@ -28,6 +28,4 @@ class RcyAdapt() : RecyclerView.Adapter<Holder>() {
     }
 }
 
-class Holder(itemview : View?) : RecyclerView.ViewHolder(itemview) {
-
-}
+class Holder(itemview : View?) : RecyclerView.ViewHolder(itemview)

@@ -10,11 +10,11 @@ import com.audio.view.fragment.AudioFragment
 import com.audio.view.show.*
 
 enum class Show {
-    AUDIOSHOW, LOCALMUSICSHOW, RECENTLYMUSICSHOW, DETAILSPLAYSHOW
+    AUDIOSHOW, LOCALMUSICSHOW, RECENTLYMUSICSHOW, DETAILSPLAYSHOW, COLLECTIONSHOW
 }
 
 enum class AudioFrgToken {
-    SONG, SINGER, ALBUM, FOLDER
+    SONG, SINGER, ALBUM, FOLDER, SONGCOLLECTION, ALBUMCOLLECTION
 }
 
 fun Context.showToken(): String {
@@ -34,6 +34,7 @@ fun AudioActivity.createLife(show: Show): (Activity, LifeOrder, Any?) -> Any {
         Show.LOCALMUSICSHOW -> return LocalMusicShow().to<AtyLife>().receive()
         Show.RECENTLYMUSICSHOW -> return RecentlyPlayShow().to<AtyLife>().receive()
         Show.DETAILSPLAYSHOW -> return DetailsPlayShow().to<AtyLife>().receive()
+        Show.COLLECTIONSHOW -> return CollectionShow().to<AtyLife>().receive()
     }
     return AudioShow().to<AtyLife>().receive()
 }
@@ -48,5 +49,7 @@ fun AudioFragment.createLife(token : AudioFrgToken) : (Fragment, LifeOrder, Any?
         AudioFrgToken.SINGER -> return SingerFrgShow().to<FrgLife>().receive()
         AudioFrgToken.ALBUM -> return AlbumFrgShow().to<FrgLife>().receive()
         AudioFrgToken.FOLDER -> return FolderFrgShow().to<FrgLife>().receive()
+        AudioFrgToken.SONGCOLLECTION -> return SongCollectionFrgShow().to<FrgLife>().receive()
+        AudioFrgToken.ALBUMCOLLECTION -> return FolderFrgShow().to<FrgLife>().receive()
     }
 }

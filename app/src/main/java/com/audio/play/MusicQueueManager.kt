@@ -1,13 +1,15 @@
 package com.audio.play
 
 import android.support.v4.media.session.MediaSessionCompat
+import com.audio.util.execute
 
 open class MusicQueueManager {
 
     private var callback = mutableListOf<QueueCallback>()
 
-    private var playQueue = mutableListOf<MediaSessionCompat.QueueItem>()
-    private var currentIndex = 0
+    protected var playQueue = mutableListOf<MediaSessionCompat.QueueItem>()
+    protected var queueTitle: String = ""
+    protected var currentIndex = 0
 
     fun registerCallback(callback: QueueCallback) {
         this.callback.add(callback)
@@ -17,28 +19,35 @@ open class MusicQueueManager {
         this.callback.remove(callback)
     }
 
-    fun setQueue(title: String, queue: MutableList<MediaSessionCompat.QueueItem>, initialId: String? = null) {
+    fun setQueue(title: String, queue: MutableList<MediaSessionCompat.QueueItem>, initIndex : Int) {
         playQueue = queue
-        currentIndex = queue.index(initialId, {
-            queueItem, id ->
-            queueItem.description.mediaId.equals(initialId)
+        queueTitle = title
+        currentIndex = initIndex
+        notifyQueueUpdate()
+    }
+
+    fun indexOf(id: String?): Int {
+        return playQueue.index(id, { queueItem, s ->
+            queueItem.description.mediaId.equals(id)
         })
-        callback.forEach {
-            it.onQueueUpdate(title, queue)
-        }
     }
 
-    fun setCurrentIndex(index: Int) {
-        if (index >= 0) {
-            currentIndex = index % playQueue.size
-        }
+    fun addQueueItem(queueItem: MediaSessionCompat.QueueItem) {
+        playQueue.add(queueItem)
+        notifyQueueUpdate()
     }
 
-    fun setCurrentIndex(mediaId: String?) {
+    fun removeQueueItem(queueItem: MediaSessionCompat.QueueItem) {
+        playQueue.remove(queueItem)
+        notifyQueueUpdate()
+    }
+
+    open fun setCurrentIndex(mediaId: String?) : Int{
         currentIndex = playQueue.index(mediaId, {
             queueItem, id ->
             queueItem.description.mediaId.equals(id)
         })
+        return currentIndex
     }
 
     fun getCurrentItem(): MediaSessionCompat.QueueItem? {
@@ -60,14 +69,9 @@ open class MusicQueueManager {
         })
     }
 
-    fun skipQueuePosition(amount: Int) {
-        var pos = currentIndex + amount
-        if (pos <= 0) {
-            pos = 0
-        } else if (playQueue.size > pos) {
-            pos %= playQueue.size
-        }
-        currentIndex = pos
+    open fun skipQueuePosition(amount: Int){
+        val pos = currentIndex + amount
+        (pos <= 0).execute({ currentIndex = 0 },{currentIndex = pos % playQueue.size})
     }
 
     fun canPlayNext(): Boolean {
@@ -78,8 +82,18 @@ open class MusicQueueManager {
         return currentIndex > 0
     }
 
+    private fun notifyQueueUpdate() {
+        callback.forEach {
+            it.onQueueUpdate(queueTitle, playQueue)
+        }
+    }
+//    fun setCurrentIndex(index: Int) {
+//        if (index >= 0) {
+//            currentIndex = index % playQueue.size
+//        }
+//    }
+
     interface QueueCallback {
         fun onQueueUpdate(title: String, queue: MutableList<MediaSessionCompat.QueueItem>)
     }
 }
-

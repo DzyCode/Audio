@@ -1,12 +1,9 @@
 package com.audio.view.layout
 
 import android.graphics.Color
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import audio.com.audio.R
-import com.audio.model.Song
 import org.jetbrains.anko.*
 
 fun <T : ViewGroup> T.createPlayNavigationBar() {

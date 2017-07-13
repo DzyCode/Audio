@@ -11,8 +11,8 @@ import com.audio.AudioApp
 import com.audio.model.Song
 import com.audio.model.picUri
 import com.audio.play.MusicPlayControl
+import com.audio.util.agent.startActivity
 import com.audio.util.load
-import com.audio.util.startActivity
 import com.audio.view.life.Show
 import com.audio.view.life.playStateToken
 import org.jetbrains.anko.find
@@ -41,7 +41,7 @@ class PlayBar(parent: View, context : Activity) {
         playOrPause.onClick { if (isPlay) playControl.pause() else playControl.play() }
         playNext.onClick { playControl.playNext() }
         parentView.onClick {
-            var bundle = Bundle()
+            val bundle = Bundle()
             bundle.putParcelable(AudioApp.instance.playStateToken(), playControl.getPlaybackState())
             parentView.context.startActivity(Show.DETAILSPLAYSHOW, bundle)
         }
@@ -58,7 +58,7 @@ class PlayBar(parent: View, context : Activity) {
             playTitle.text = it.title
             playSubTitle.text = it.artist + " - " + it.album
             playIcon.load(it.picUri())
-            var resId = if (isPlay) R.mipmap.playbar_btn_pause else R.mipmap.playbar_btn_play
+            val resId = if (isPlay) R.mipmap.playbar_btn_pause else R.mipmap.playbar_btn_play
             playOrPause.setImageResource(resId)
         }
     }

@@ -5,7 +5,7 @@ import com.audio.present.base.Present
 import com.audio.util.ChoreographerCompat
 
 class DetailPlayPresent : Present {
-    constructor(ctx: Activity) : super(ctx)
+    constructor(ctx: Activity,   connected : () -> Unit = {}) : super(ctx, connected)
 
     fun registerProgressCallback(callback: (time: Long) -> Unit) {
         ChoreographerCompat.instance.registerCallback(callback)

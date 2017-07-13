@@ -37,12 +37,12 @@ class RcyItemDecoration : RecyclerView.ItemDecoration {
 
     private fun drawVertical(c: Canvas?, parent: RecyclerView?, state: RecyclerView.State?) {
         parent?.let {
-            var left = it.paddingLeft
-            var right = it.width - parent!!.paddingRight
+            val left = it.paddingLeft
+            val right = it.width - parent.paddingRight
             for(i in 0 until it.childCount) {
-                var child = it.getChildAt(i)
-                var layout = child.layoutParams as RecyclerView.LayoutParams
-                var top = child.bottom + layout.bottomMargin
+                val child = it.getChildAt(i)
+                val layout = child.layoutParams as RecyclerView.LayoutParams
+                val top = child.bottom + layout.bottomMargin
                 drawable.setBounds(left, top, right, top + drawable.intrinsicHeight)
                 drawable.draw(c)
             }

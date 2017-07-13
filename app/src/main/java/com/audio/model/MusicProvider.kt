@@ -12,14 +12,14 @@ class MusicProvider {
         nodeMap = mutableMapOf()
     }
     fun registNode(parentId : String) {
-        var value = nodeMap.get(parentId)
+        val value = nodeMap[parentId]
         if (value == null) {
             nodeMap.put(parentId, Node.node(parentId))
         }
     }
 
     fun load(parentId: String, load : (MutableList<MediaBrowserCompat.MediaItem>) -> Unit) {
-        nodeMap.get(parentId)?.load(context, parentId, load)
+        nodeMap[parentId]?.load(context, parentId, load)
     }
 }
 

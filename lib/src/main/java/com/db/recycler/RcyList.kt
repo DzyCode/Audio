@@ -15,15 +15,15 @@ class RcyList : ArrayList<Any>() {
     private val rcyAdapt: RcyAdapt by lazy { RcyAdapt(this@RcyList) }
 
     fun bindViewHold(view: View?, pos: Int) {
-        mapOfClazz.get(get(pos).javaClass.name)?.bindData?.invoke(view, get(pos))
+        mapOfClazz[get(pos).javaClass.name]?.bindData?.invoke(view, get(pos))
     }
 
     fun createItemView(parent: ViewGroup?, viewType: Int): View {
-        return mapOfType.get(viewType)?.genView?.invoke(LayoutInflater.from(parent?.context), parent)!!
+        return mapOfType[viewType]?.genView?.invoke(LayoutInflater.from(parent?.context), parent)!!
     }
 
     fun itemType(position: Int): Int {
-        return mapOfClazz.get(get(position).javaClass.name)?.type ?: 0
+        return mapOfClazz[get(position).javaClass.name]?.type ?: 0
     }
 
     fun registerType(clazz: Class<*>, bindData: ((View?, Any) -> Unit),
@@ -45,7 +45,7 @@ class RcyList : ArrayList<Any>() {
     }
 
     fun notifyItemRangeChanged(positionStart: Int, itemCount: Int) {
-        rcyAdapt.notifyItemRangeChanged(positionStart, itemCount);
+        rcyAdapt.notifyItemRangeChanged(positionStart, itemCount)
     }
 
     fun notifyItemInserted(position: Int) {
@@ -61,7 +61,7 @@ class RcyList : ArrayList<Any>() {
     }
 
     fun notifyItemRemoved(position: Int) {
-        rcyAdapt.notifyItemRangeRemoved(position, 1);
+        rcyAdapt.notifyItemRangeRemoved(position, 1)
     }
 
     fun notifyItemRangeRemoved(positionStart: Int, itemCount: Int) {

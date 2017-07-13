@@ -1,6 +1,5 @@
 package com.audio.model.db
 
-import android.database.sqlite.SQLiteOpenHelper
 import com.audio.AudioApp
 import org.jetbrains.anko.db.ManagedSQLiteOpenHelper
 

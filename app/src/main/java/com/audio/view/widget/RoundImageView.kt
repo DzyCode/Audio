@@ -51,8 +51,6 @@ class RoundImageView : ImageView {
     }
 
     override fun onDraw(canvas: Canvas?) {
-        canvas?.let {
-            it.drawCircle(center.toFloat(), center.toFloat(), radius.toFloat(), paint)
-        }
+        canvas?.drawCircle(center.toFloat(), center.toFloat(), radius.toFloat(), paint)
     }
 }

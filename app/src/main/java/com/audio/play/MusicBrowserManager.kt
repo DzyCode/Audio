@@ -6,18 +6,19 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
-import com.audio.util.log
 import com.audio.util.to
 
 class MusicBrowserManager {
     var mediaBrowser: MediaBrowserCompat
     var context: Context
     var callback: MediaControllerCompat.Callback? = null
+    var connected : () -> Unit = {}
 
-    constructor(context: Context) {
+    constructor(context: Context, connected : () -> Unit = {}) {
         mediaBrowser = MediaBrowserCompat(context, ComponentName(context, MusicService::class.java),
                 ConnectionCallback(), null)
         this.context = context
+        this.connected = connected
     }
 
     fun connect(callback: MediaControllerCompat.Callback?) {
@@ -72,9 +73,10 @@ class MusicBrowserManager {
     inner class ConnectionCallback : MediaBrowserCompat.ConnectionCallback() {
 
         override fun onConnected() {//set token 后调用
-            var mediaControll = MediaControllerCompat(context, mediaBrowser.sessionToken)
+            val mediaControll = MediaControllerCompat(context, mediaBrowser.sessionToken)
             MediaControllerCompat.setMediaController(context.to<Activity>(), mediaControll)
             mediaControll.registerCallback(callback)
+            connected.invoke()
         }
 
         override fun onConnectionSuspended() {
