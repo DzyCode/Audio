@@ -43,21 +43,9 @@ class DetailsPlayShow : AtyLife, ICallBack, IPlayControlCallback {
         }
     }
 
-    override fun receive(): (Activity, LifeOrder, Any?) -> Any {
-        return {
-            activity, lifeOrder, any ->
-            when (lifeOrder) {
-                LifeOrder.ONCREATE -> onCreate(activity)
-                LifeOrder.ONRESUME -> onResume()
-                LifeOrder.ONSTOP -> onStop()
-                LifeOrder.ONDESTROY -> onDestroy()
-            }
-        }
-    }
-
-    private fun onCreate(activity: Activity) {
-        initVariable(activity)
-        initView(activity)
+    override fun onCreate(context: Activity, any: Any?) {
+        initVariable(context)
+        initView(context)
         initListener()
         start()
     }
@@ -97,13 +85,7 @@ class DetailsPlayShow : AtyLife, ICallBack, IPlayControlCallback {
         playInfoView.setQueueTitle(present.queueTitle())
     }
 
-    private fun onResume() {
-    }
-
-    private fun onStop() {
-    }
-
-    private fun onDestroy() {
+    override fun onDestroy() {
         present.disconnect()
     }
 

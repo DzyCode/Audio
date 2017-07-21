@@ -9,7 +9,6 @@ import audio.com.audio.R
 import com.audio.model.Singer
 import com.audio.model.node.Node
 import com.audio.present.DefaultPresent
-import com.audio.util.LifeOrder
 import com.audio.util.to
 import com.audio.view.layout.SingerFrgLayout
 import com.audio.view.layout.SingerItemView
@@ -19,11 +18,11 @@ import com.db.recycler.RcyList
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 
-class SingerFrgShow : FrgLife() {
+class SingerFrgShow : FrgLife {
 
-    lateinit var present : DefaultPresent
-    lateinit var rcyList : RecyclerView
-    lateinit var adapt : RcyList
+    lateinit var present: DefaultPresent
+    lateinit var rcyList: RecyclerView
+    lateinit var adapt: RcyList
     var singerBind: (View?, Any) -> Unit = {
         view, any ->
         view?.let {
@@ -37,18 +36,8 @@ class SingerFrgShow : FrgLife() {
         viewGroup!!.context.createLocalItem()
     }
 
-    override fun receive(): (Fragment, LifeOrder, Any?) -> Any {
-        return {
-            fragment, lifeOrder, any ->
-            when (lifeOrder) {
-                LifeOrder.ONCREATEVIEW -> {
-                    initVariable(fragment, initView(fragment))
-                }
-                LifeOrder.ONSTART -> onStart()
-                LifeOrder.ONSTOP -> onStop()
-                else -> Any()
-            }
-        }
+    override fun onCreateView(context: Fragment, any: Any?): Any {
+        return initVariable(context, initView(context))
     }
 
     private fun initView(fragment: Fragment): View {
@@ -64,7 +53,7 @@ class SingerFrgShow : FrgLife() {
         return view
     }
 
-    private fun onStart() {
+    override fun onStart() {
         present.connect()
         present.loadDataWithId<Any>(Node.SINGER, {
             s, list ->
@@ -74,7 +63,7 @@ class SingerFrgShow : FrgLife() {
         })
     }
 
-    private fun onStop() {
+    override fun onStop() {
         present.disconnect()
     }
 }

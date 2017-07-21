@@ -5,10 +5,10 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.audio.util.LifeOrder
 import com.audio.util.agent.emit
 import com.audio.util.to
 import com.audio.view.life.AudioFrgToken
+import com.audio.view.life.LifeOrder
 import com.audio.view.life.createLife
 import com.audio.view.life.showToken
 import org.jetbrains.anko.bundleOf

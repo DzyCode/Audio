@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.audio.util.LifeOrder
 import com.audio.view.AudioActivity
+import com.audio.view.life.LifeOrder
 import com.audio.view.life.Show
 import com.audio.view.life.dataToken
 import com.audio.view.life.showToken

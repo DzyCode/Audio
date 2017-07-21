@@ -3,7 +3,6 @@ package com.audio.view.life
 import android.app.Activity
 import android.content.Context
 import android.support.v4.app.Fragment
-import com.audio.util.LifeOrder
 import com.audio.util.to
 import com.audio.view.AudioActivity
 import com.audio.view.fragment.AudioFragment

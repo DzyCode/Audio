@@ -19,7 +19,6 @@ import com.audio.present.DefaultPresent
 import com.audio.present.base.ICallBack
 import com.audio.view.layout.*
 import com.audio.view.life.AtyLife
-import com.audio.util.LifeOrder
 import com.audio.util.agent.startActivity
 import com.audio.util.to
 import com.audio.view.AudioActivity
@@ -73,29 +72,13 @@ class AudioShow : AtyLife, ICallBack {
     lateinit var actionBarToggle: ActionBarDrawerToggle
     lateinit var audioPresent: DefaultPresent
 
-    var receive: (Activity, LifeOrder, Any?) -> Any = {
-        activity, lifeOrder, any ->
-        when (lifeOrder) {
-            LifeOrder.ONCREATE -> {
-                initView(activity)
-                initVariable(activity)
-            }
-            LifeOrder.ONSTART -> {
-                onStart()
-            }
-            LifeOrder.ONSTOP -> {
-                onStop()
-            }
-            LifeOrder.ONCREATEOPTIONSMENU -> {
-                activity.to<AppCompatActivity>().menuInflater.inflate(R.menu.search, any!!.to())
-            }
-            LifeOrder.ONRESUME -> onResume()
-            LifeOrder.ONDESTROY -> onDestroy()
-        }
+    override fun onCreate(context: Activity, any: Any?) {
+        initView(context)
+        initVariable(context)
     }
 
-    override fun receive(): (Activity, LifeOrder, Any?) -> Any {
-        return receive
+    override fun onCreateOptionsMenu(any: Any?) {
+        context.to<AppCompatActivity>().menuInflater.inflate(R.menu.search, any!!.to())
     }
 
     fun initView(activity: Activity) {
@@ -119,7 +102,7 @@ class AudioShow : AtyLife, ICallBack {
         updatePlayBar(true)
     }
 
-    fun onStart() {
+    override fun onStart() {
         audioPresent.loadDataWithId<Any>(Node.NAVIGATION, {
             id, list ->
             audioData.clear()
@@ -133,14 +116,12 @@ class AudioShow : AtyLife, ICallBack {
         })
     }
 
-    fun onResume() {
+    override fun onResume() {
         updatePlayBar(false)
     }
 
-    fun onStop() {
-    }
 
-    fun onDestroy() {
+    override fun onDestroy() {
         audioPresent.disconnect()
     }
 

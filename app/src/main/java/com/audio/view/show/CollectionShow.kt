@@ -32,20 +32,10 @@ class CollectionShow : AtyLife, ICallBack {
     val playBar: PlayBar by lazy { PlayBar(parentView, context) }
     lateinit var present: DefaultPresent
 
-    override fun receive(): (Activity, LifeOrder, Any?) -> Any {
-        return {
-            activity, lifeOrder, any ->
-            when (lifeOrder) {
-                LifeOrder.ONCREATE -> onCreate(activity)
-                LifeOrder.ONDESTROY -> onDestroy()
-            }
-        }
-    }
-
-    private fun onCreate(activity: Activity) {
-        context = activity
-        initView(activity.to<AppCompatActivity>())
-        initVariable(activity)
+    override fun onCreate(context: Activity, any: Any?) {
+        this.context = context
+        initView(context.to<AppCompatActivity>())
+        initVariable(context)
     }
 
     private fun initView(activity: AppCompatActivity) {
@@ -63,7 +53,7 @@ class CollectionShow : AtyLife, ICallBack {
         present.connect()
     }
 
-    private fun onDestroy() {
+    override fun onDestroy() {
         present.disconnect()
     }
 

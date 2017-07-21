@@ -20,7 +20,7 @@ import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk15.coroutines.onClick
 
-class SongFrgShow : FrgLife() {
+class SongFrgShow : FrgLife {
     lateinit var songPresent: DefaultPresent
     lateinit var songList: RecyclerView
     lateinit var songAdapt: RcyList
@@ -60,20 +60,10 @@ class SongFrgShow : FrgLife() {
         viewGroup!!.context.createSongItemView()
     }
 
-    override fun receive(): (Fragment, LifeOrder, Any?) -> Any {
-        return {
-            fragment, lifeOrder, any ->
-            when (lifeOrder) {
-                LifeOrder.ONCREATEVIEW -> {
-                    val view = initView(fragment)
-                    initVariable(fragment)
-                    view
-                }
-                LifeOrder.ONSTART -> onStart()
-                LifeOrder.ONSTOP -> onStop()
-                else -> initView(fragment)
-            }
-        }
+    override fun onCreateView(context: Fragment, any: Any?): Any {
+        var view = initView(context)
+        initVariable(context)
+        return view
     }
 
     private fun initView(fragment: Fragment): View {
@@ -91,7 +81,7 @@ class SongFrgShow : FrgLife() {
 
     }
 
-    private fun onStart() {
+    override fun onStart() {
         songPresent.connect()
         songPresent.loadDataWithId<Any>(Node.SONGS, {
             s, list ->
@@ -100,18 +90,18 @@ class SongFrgShow : FrgLife() {
             songAdapt.notifyDataSetChanged()
             val songs = mutableListOf<Song>()
             list.forEach {
-                if(it is Song) {
+                if (it is Song) {
                     songs.add(it)
                 }
             }
         })
     }
 
-    private fun onStop() {
+    override fun onStop() {
         songPresent.disconnect()
     }
 
-    private fun addCurrentSongsToQueue(initialId : String) {
+    private fun addCurrentSongsToQueue(initialId: String) {
         setSongQueue(Node.SONGS,
                 songAdapt.filter { it as? Song }, initialId)
     }

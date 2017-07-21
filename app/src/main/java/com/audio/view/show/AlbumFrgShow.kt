@@ -9,7 +9,6 @@ import audio.com.audio.R
 import com.audio.model.Album
 import com.audio.model.node.Node
 import com.audio.present.AlbumPresent
-import com.audio.util.LifeOrder
 import com.audio.util.to
 import com.audio.view.layout.AlbumFrgLayout
 import com.audio.view.layout.AlbumItemView
@@ -20,12 +19,12 @@ import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 import kotlin.properties.Delegates
 
-class AlbumFrgShow : FrgLife() {
+class AlbumFrgShow : FrgLife {
 
     var present by Delegates.notNull<AlbumPresent>()
     var rcyList by Delegates.notNull<RecyclerView>()
-    var adapt  by Delegates.notNull<RcyList>()
-    var albumBind : (View?, Any) -> Unit = {
+    var adapt by Delegates.notNull<RcyList>()
+    var albumBind: (View?, Any) -> Unit = {
         view, any ->
         view?.let {
             val tag = it.tag as AlbumItemView? ?: AlbumItemView(it)
@@ -33,25 +32,17 @@ class AlbumFrgShow : FrgLife() {
             it.tag = tag
         }
     }
-    var albumItemView : (LayoutInflater, ViewGroup?) -> View = {
+    var albumItemView: (LayoutInflater, ViewGroup?) -> View = {
         layoutInflater, viewGroup ->
         viewGroup!!.context.createLocalItem()
     }
-    override fun receive(): (Fragment, LifeOrder, Any?) -> Any {
-        return {
-            fragment, lifeOrder, any ->
-            when(lifeOrder) {
-                LifeOrder.ONCREATEVIEW -> initVariable(fragment, initView(fragment))
-                LifeOrder.ONSTART -> onStart()
-                LifeOrder.ONSTOP -> onStop()
-                else -> Any()
-            }
-        }
+
+    override fun onCreateView(context: Fragment, any: Any?): Any {
+        return initVariable(context,
+                AlbumFrgLayout().createView(AnkoContext.create(context.context, context)))
     }
-    private fun initView(fragment: Fragment) : View {
-        return AlbumFrgLayout().createView(AnkoContext.create(fragment.context, fragment))
-    }
-    private fun initVariable(fragment: Fragment, view: View) : View {
+
+    private fun initVariable(fragment: Fragment, view: View): View {
         present = AlbumPresent(fragment.activity)
         rcyList = view.find<RecyclerView>(R.id.rcyList)
         adapt = RcyList()
@@ -59,7 +50,8 @@ class AlbumFrgShow : FrgLife() {
         rcyList.adapter = adapt.adapt()
         return view
     }
-    private fun onStart() {
+
+    override fun onStart() {
         present.connect()
         present.loadDataWithId<Any>(Node.ALBUMS, {
             s, list ->
@@ -68,7 +60,8 @@ class AlbumFrgShow : FrgLife() {
             adapt.notifyDataSetChanged()
         })
     }
-    private fun onStop(){
+
+    override fun onStop() {
         present.disconnect()
     }
 }

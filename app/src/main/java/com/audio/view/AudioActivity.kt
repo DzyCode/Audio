@@ -4,9 +4,9 @@ import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
-import com.audio.util.LifeOrder
 import com.audio.util.agent.emit
 import com.audio.util.to
+import com.audio.view.life.LifeOrder
 import com.audio.view.life.Show
 import com.audio.view.life.createLife
 import com.audio.view.life.showToken

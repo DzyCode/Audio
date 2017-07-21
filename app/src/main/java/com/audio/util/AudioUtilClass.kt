@@ -1,6 +1,0 @@
-package com.audio.util
-
-enum class LifeOrder{
-    ONCREATEVIEW, ONCREATE, ONSTART, ONRESUME, ONSTOP, ONPAUSE, ONDESTROY, ONCREATEOPTIONSMENU
-}
-

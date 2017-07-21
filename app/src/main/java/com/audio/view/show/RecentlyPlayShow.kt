@@ -15,7 +15,6 @@ import com.audio.model.node.Node
 import com.audio.play.SongQueueManager
 import com.audio.present.RecentlyPlayPresent
 import com.audio.present.base.ICallBack
-import com.audio.util.LifeOrder
 import com.audio.util.agent.setSongQueue
 import com.audio.util.filter
 import com.audio.util.to
@@ -31,7 +30,7 @@ import kotlin.properties.Delegates
 class RecentlyPlayShow : AtyLife, ICallBack {
 
     private lateinit var parent: View
-    private lateinit var context : Activity
+    private lateinit var context: Activity
     private val toolbar by lazy { parent.find<Toolbar>(R.id.recently_play_bar) }
     private val recentList by lazy { parent.find<RecyclerView>(R.id.recently_play_list) }
     private var playPresent by Delegates.notNull<RecentlyPlayPresent>()
@@ -70,35 +69,24 @@ class RecentlyPlayShow : AtyLife, ICallBack {
         viewGroup!!.context.createRecentlyPlayItemView()
     }
 
-    override fun receive(): (Activity, LifeOrder, Any?) -> Any {
-        return {
-            activity, lifeOrder, any ->
-            when (lifeOrder) {
-                LifeOrder.ONCREATE -> onCreate(activity)
-                LifeOrder.ONSTART -> onStart()
-                LifeOrder.ONSTOP -> onStop()
-            }
-        }
-    }
-
-    fun onCreate(activity: Activity) {
-        context = activity
-        parent = RecentlyPlayLayout().setContentView(activity)
-        activity.to<AppCompatActivity>().let {
+    override fun onCreate(context: Activity, any: Any?) {
+        this.context = context
+        parent = RecentlyPlayLayout().setContentView(context)
+        context.to<AppCompatActivity>().let {
             it.setSupportActionBar(toolbar)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         adapt.registerType(SongHead::class.java, songHeadBind, songHeadView)
         adapt.registerType(Song::class.java, recentlyItemBind, recentlyItemView)
         recentList.adapter = adapt.adapt()
-        playPresent = RecentlyPlayPresent(activity)
+        playPresent = RecentlyPlayPresent(context)
         playPresent.registerCallback(this)
         toolbar.setNavigationOnClickListener {
             context.onBackPressed()
         }
     }
 
-    fun onStart() {
+    override fun onStart() {
         playPresent.connect()
         playBar.play(SongQueueManager.instance.getCurrentSong())
         playPresent.loadDataWithId<Any>(Node.RECENTPLAY, {
@@ -109,7 +97,7 @@ class RecentlyPlayShow : AtyLife, ICallBack {
         })
     }
 
-    fun onStop() {
+    override fun onStop() {
         playPresent.disconnect()
     }
 

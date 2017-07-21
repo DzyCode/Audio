@@ -21,7 +21,7 @@ import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk15.coroutines.onClick
 
-class SongCollectionFrgShow : FrgLife(), ICallBack {
+class SongCollectionFrgShow : FrgLife, ICallBack {
     lateinit var present: DefaultPresent
     lateinit var rcyList: RecyclerView
     lateinit var adapt: RcyList
@@ -42,21 +42,9 @@ class SongCollectionFrgShow : FrgLife(), ICallBack {
         viewGroup!!.context.createSongItemView()
     }
 
-    override fun receive(): (Fragment, LifeOrder, Any?) -> Any {
-        return {
-            fragment, lifeOrder, any ->
-            when (lifeOrder) {
-                LifeOrder.ONCREATEVIEW -> initVariable(fragment, onCreateView(fragment))
-                LifeOrder.ONSTART -> onStart()
-                LifeOrder.ONRESUME -> onResume()
-                LifeOrder.ONDESTROY -> onDestroy()
-                else -> Any()
-            }
-        }
-    }
-
-    private fun onCreateView(fragment: Fragment): View {
-        return SongCollectionFrgLayout().createView(AnkoContext.create(fragment.context, fragment))
+    override fun onCreateView(context: Fragment, any: Any?): Any {
+        return initVariable(context,
+                SongCollectionFrgLayout().createView(AnkoContext.create(context.context, context)))
     }
 
     private fun initVariable(fragment: Fragment, view: View): View {
@@ -70,7 +58,7 @@ class SongCollectionFrgShow : FrgLife(), ICallBack {
         return view
     }
 
-    private fun onStart() {
+    override fun onStart() {
         logd(this, "start load data")
         present.loadDataWithId<Any>(Node.SONGCOLLECTION, {
             s, list ->
@@ -80,10 +68,8 @@ class SongCollectionFrgShow : FrgLife(), ICallBack {
         })
     }
 
-    private fun onResume() {
-    }
 
-    private fun onDestroy() {
+    override fun onDestroy() {
         present.disconnect()
     }
 

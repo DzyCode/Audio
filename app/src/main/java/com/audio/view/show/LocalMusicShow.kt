@@ -32,24 +32,10 @@ class LocalMusicShow : AtyLife, ICallBack {
     val toolBar: Toolbar by lazy { parentView.find<Toolbar>(R.id.head_bar) }
     val playBar: PlayBar by lazy { PlayBar(parentView, context) }
     lateinit var present: DefaultPresent
-    var receive: (Activity, LifeOrder, Any?) -> Any = {
-        activity, lifeOrder, any ->
-        when (lifeOrder) {
-            LifeOrder.ONCREATE -> onCreate(activity)
-            LifeOrder.ONSTART -> onStart()
-            LifeOrder.ONRESUME -> onResume()
-            LifeOrder.ONSTOP -> onStop()
-            LifeOrder.ONDESTROY -> onDestroy()
-        }
-    }
 
-    override fun receive(): (Activity, LifeOrder, Any?) -> Any {
-        return receive
-    }
-
-    private fun onCreate(activity: Activity) {
-        initView(activity)
-        initVariable(activity)
+    override fun onCreate(context: Activity, any: Any?) {
+        initView(context)
+        initVariable(context)
     }
 
     private fun initView(activity: Activity) {
@@ -71,18 +57,11 @@ class LocalMusicShow : AtyLife, ICallBack {
         }
     }
 
-    private fun onStart() {
+    override fun onStart() {
         playBar.play(currentSong())
     }
 
-    private fun onResume() {
-
-    }
-
-    private fun onStop() {
-    }
-
-    private fun onDestroy() {
+    override fun onDestroy() {
         present.disconnect()
     }
 
